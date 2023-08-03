@@ -68,4 +68,4 @@ WHERE cus.customerId IS NULL;
 FROM customer cus
 LEFT JOIN sales sls 
     ON cus.customerId = sls.customerId
-WHERE cus.customerId IS NULL;*/
+WHERE cus.customerId IS NULL;*/.....
