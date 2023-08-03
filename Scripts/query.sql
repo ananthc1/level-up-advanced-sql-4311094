@@ -1,6 +1,7 @@
-select firstname, lastname, title 
+select firstname, lastname, title,
+employeeId, managerId 
 from employee
-LIMIT 5;
+LIMIT 10;
 
 select model, EngineType
 from model
@@ -14,23 +15,24 @@ where name = 'employee';
 SELECT emp.firstName, emp.lastName, emp.title,
 --emp.employeeId, 
 mng.firstName AS Manager_FirstName, mng.lastName as Manager_LastName
---mng.employeeId
+--,mng.employeeId AS managerId
 from employee emp
 INNER JOIN employee mng
-on emp.managerId=mng.employeeId;
+on emp.managerId = mng.employeeId;
 
 select sql
 from sqlite_schema
 where name = 'sales';
 
 select title, count(employeeId) as count from employee GROUP by title;
+select firstName, lastName, title from employee where title = 'CEO'; 
 
 -- Find sales people who have zero sales
 SELECT emp.firstName, emp.lastName, emp.title, emp.startDate, sls.salesId
 from employee emp
 LEFT JOIN sales sls 
 on emp.employeeId=sls.employeeId
-WHERE emp.title = 'Sales Person' AND sls.salesId IS NOT NULL; -- IS NOT NULL
+WHERE emp.title = 'Sales Person' AND sls.salesId IS NULL; -- IS NOT NULL
 
 select sql
 from sqlite_schema
