@@ -38,8 +38,7 @@ select sql
 from sqlite_schema
 where name = 'customer'; -- sales, 
 
--- List all customers & their sales, even if some data is gone
-
+-- List all customers & their sales, even if some data is gone --
 SELECT cus.firstName, cus.lastName, cus.email, sls.salesAmount, sls.soldDate
 FROM customer cus
 INNER JOIN sales sls
@@ -51,52 +50,22 @@ FROM customer cus
 LEFT JOIN sales sls
     ON cus.customerId = sls.customerId
 WHERE sls.salesId IS NULL
+/*SELECT cus.firstName, cus.lastName, cus.email, sls.salesAmount, sls.soldDate
+FROM sales sls 
+LEFT JOIN customer cus 
+ON sls.customerId = cus.customerId
+WHERE sls.salesId IS NULL */
 UNION
 -- UNION WITH SALES MISSING CUSTOMER DATA
 SELECT cus.firstName, cus.lastName, cus.email, sls.salesAmount, sls.soldDate
 FROM sales sls
 LEFT JOIN customer cus
     ON cus.customerId = sls.customerId
+    --ON sls.customerId = cus.customerId
 WHERE cus.customerId IS NULL;
 
----- How many cars has been sold per employee
-SELECT emp.employeeId, emp.firstName, emp.lastName 
-from sales sls
-INNER JOIN employee emp
-on sls.employeeId = emp.employeeId
-
--- then add the group by & count
-SELECT emp.employeeId, emp.firstName, emp.lastName, count(*) as no_of_cars_sold 
-from sales sls
-INNER JOIN employee emp
-on sls.employeeId = emp.employeeId
-group by emp.employeeId, emp.firstName, emp.lastName
-order by no_of_cars_sold DESC; -- LIMIT 25
-
--- Find the least and most expensive car sold by each employee this year
-SELECT emp.employeeId, emp.firstName, emp.lastName, 
-MIN(salesAmount)AS MinSalesAmount, MAX(salesAmount) AS MaxSalesAmount
-from sales sls 
-INNER JOIN employee emp
-ON sls.employeeId=emp.employeeId
-WHERE sls.soldDate >= Date ('Now', 'start of year')
-GROUP BY emp.employeeId, emp.firstName, emp.lastName; 
-
--- Display report for employees who have sold at least 5 cars
-SELECT emp.employeeId, emp.firstName, emp.lastName, 
-count(*) as NumOfCarsSold,
-MIN(salesAmount)AS MinSalesAmount, MAX(salesAmount) AS MaxSalesAmount
-from sales sls 
-INNER JOIN employee emp
-ON sls.employeeId=emp.employeeId
-WHERE sls.soldDate >= Date ('Now', 'start of year')
-GROUP BY emp.employeeId, emp.firstName, emp.lastName
-HAVING count (*) >10;
-
--- Summarise sales per year by using a CTE
-WITH cte as (
-SELECT strftime('%Y', soldDate) AS soldYear,
-salesAmount from sales
-)
-SELECT soldYear, FORMAT("$%.2f", sum(salesAmount)) as AnnualSales
-from cte GROUP BY soldYear ORDER BY soldyear;
+/*SELECT cus.firstName, cus.lastName, cus.email, sls.salesAmount, sls.soldDate
+FROM customer cus
+LEFT JOIN sales sls 
+    ON cus.customerId = sls.customerId
+WHERE cus.customerId IS NULL;*/
